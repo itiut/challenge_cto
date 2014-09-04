@@ -3,20 +3,24 @@ require 'date'
 module ChallengeCTO
   class Level3
     class Coupon
-      def initialize(value, limit_first = nil, limit_last = nil)
+      def initialize(value, available_from = nil, available_to = nil)
         @value = value
-        @time_limit = if limit_first && limit_last
-                        [limit_first, limit_last]
-                      else
-                        nil
-                      end
+        @available_between = if available_from && available_to
+                               [available_from, available_to]
+                             else
+                               nil
+                             end
       end
 
       attr_reader :value
 
+      # Return whether this is available at @param date.
+      #
+      # @param [Date] date
+      # @return [Boolean]
       def available_at?(date)
-        return true unless @time_limit
-        date.between?(*@time_limit)
+        return true unless @available_between
+        date.between?(*@available_between)
       end
     end
 
@@ -48,7 +52,7 @@ module ChallengeCTO
     #       * At most one 500-yen off coupon can be used at the same time.
     # @param [Date] date
     #
-    # @return [Array(Fixnum, Fixnum, Fixnum)] coupons that is optimal
+    # @return [Array(Fixnum, Fixnum, Fixnum, Fixnum)] coupons that is optimal
     #   Values of each coupons are same as @param coupons.
     def run(price, coupons, date)
       coupon_types = [
