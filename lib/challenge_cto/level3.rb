@@ -77,6 +77,14 @@ module ChallengeCTO
 
     private
 
+    # Select only valid candidates from @param candidates.
+    #
+    # @param [Array<Array<Fixnum>>] candidates
+    # @param [Array<Coupon>] coupon_types
+    # @param [Fixnum] price
+    # @param [Array<Fixnum>] max_coupons
+    # @param [Date] date
+    # @return valid candidates
     def validate(candidates, coupon_types, price, max_coupons, date)
       candidates.select do |candidate|
         # quantity
@@ -92,6 +100,11 @@ module ChallengeCTO
       end
     end
 
+    # Return whether the number of @param coupons are not graeter than @param max_coupons.
+    #
+    # @param [Array<Fixnum>] coupons
+    # @param [Array<Fixnum>] max_coupons coupons that can be used at most
+    # @return [Boolean]
     def valid_quantity?(coupons, max_coupons)
       coupons.each_index do |i|
         return false if coupons[i] > max_coupons[i]
@@ -99,11 +112,17 @@ module ChallengeCTO
       true
     end
 
+    # Return whether total value of @param coupons are not greater than @param price.
+    #
+    # @param [Array<Fixnum>] coupons
+    # @param [Array<Coupon>] coupon_tyeps
+    # @param [Fixnum] price
+    # @return [Boolean]
     def valid_total_value?(coupons, coupon_types, price)
       total_value(coupons, coupon_types) <= price
     end
 
-    # Calculate total value of the coupons
+    # Calculate total value of the coupons.
     #
     # @param [Array<Fixnum>] coupons
     # @return Fixnum total value of the coupons
@@ -115,6 +134,12 @@ module ChallengeCTO
       total
     end
 
+    # Return whether @param coupons are available at @param date.
+    #
+    # @param [Array<Fixnum>] coupons
+    # @param [Array<Coupon>] coupon_tyeps
+    # @param [Date] date
+    # @return [Boolean]
     def valid_availability?(coupons, coupon_types, date)
       coupons.each_index do |i|
         next if coupons[i] == 0
@@ -125,8 +150,8 @@ module ChallengeCTO
 
     # Select optimal coupons from candidates.
     #
-    # @param [Array<Array(Fixnum, Fixnum, Fixnum)>] candidates arrays of candidate coupons
-    # @return [Array(Fixnum, Fixnum, Fixnum)] optimal coupons
+    # @param [Array<Array<Fixnum>>] candidates arrays of candidate coupons
+    # @return [Array<Fixnum>] optimal coupons
     def optimal_candidate(candidates, coupon_types)
       candidates.max do |coupons_0, coupons_1|
         total_values = [
@@ -145,6 +170,10 @@ module ChallengeCTO
       end
     end
 
+    # Calculate the number of @param coupons.
+    #
+    # @param [Array<Fixnum>] coupons
+    # @return [Fixnum] the number of coupons.
     def n_of_coupons(coupons)
       coupons.reduce(0, :+)
     end
